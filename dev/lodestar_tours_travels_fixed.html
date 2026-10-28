@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lodestar Tours & Travels</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky bar, hero with a physics stage, a page-long antigravity sky that rises as you scroll, two marquees, flight chart, service tracks, process, enquiry form. */
+:root{
+  --bg:#F4F1FF; --bg2:#E6E0FF; --fg:#1B1147; --muted:#54488C; --line:#C9BFF4;
+  --accent:#6C2BFF; --accent2:#C21FD8; --accent-ink:#FFFFFF;
+  --sig:#FF4F7B; --sun:#FFC22E; --teal:#00A58E;
+  --card:#FFFFFF; --card-ink:#1B1147; --cover:#2A1A72;
+  --f-display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#120A33; --bg2:#1D1352; --fg:#F2EEFF; --muted:#B4AAE8; --line:#3B2D82;
+  --accent:#A98BFF; --accent2:#FF8AD0; --accent-ink:#120A33;
+  --sig:#FF7A9C; --sun:#FFD25A; --teal:#2EE6CB;
+  --card:#F4F1FF; --card-ink:#1B1147; --cover:#3B2A9A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#120A33; --bg2:#1D1352; --fg:#F2EEFF; --muted:#B4AAE8; --line:#3B2D82;
+  --accent:#A98BFF; --accent2:#FF8AD0; --accent-ink:#120A33;
+  --sig:#FF7A9C; --sun:#FFD25A; --teal:#2EE6CB;
+  --card:#F4F1FF; --card-ink:#1B1147; --cover:#3B2A9A; color-scheme:dark}
+ 
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+.wrap{max-width:1180px;margin-inline:auto}
+h1,h2,h3{font-family:var(--f-display);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sig);outline-offset:3px;border-radius:4px}
+.mono{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+.nav,.hero,.marq,.marq2,section,footer{position:relative;z-index:1}
+ 
+/* page-long antigravity sky */
+#sky{position:absolute;left:0;top:0;width:100%;height:0;overflow:hidden;z-index:0;pointer-events:none}
+#sky .sk{position:absolute;left:0;top:0;will-change:transform}
+#sky svg{display:block;width:100%;height:100%}
+ 
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:31;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-size:21px;text-decoration:none;letter-spacing:-.02em}
+.logo svg{width:26px;height:26px;color:var(--sig);animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+.nav ul a{text-decoration:none;font-weight:500;font-size:15px;color:var(--muted)}
+.nav ul a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;background:linear-gradient(110deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  font-weight:600;font-size:16px;text-decoration:none;border:0;cursor:pointer;font-family:var(--f-body);transition:transform .2s,box-shadow .2s;box-shadow:0 10px 24px -10px var(--accent)}
+.btn:hover{transform:translateY(-3px) rotate(-1.5deg);box-shadow:0 16px 28px -10px var(--accent)}
+.btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}
+@media(max-width:760px){.nav ul{display:none}}
+ 
+/* hero */
+.hero{padding-block:clamp(44px,7vw,88px) clamp(32px,5vw,64px);overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none;z-index:0}
+.blob.a{width:420px;height:420px;background:var(--accent);right:-60px;top:-80px;animation:drift 14s ease-in-out infinite alternate}
+.blob.b{width:360px;height:360px;background:var(--sig);right:22%;bottom:-120px;opacity:.4;animation:drift 17s ease-in-out infinite alternate-reverse}
+.blob.c{width:300px;height:300px;background:var(--sun);left:-90px;bottom:-60px;opacity:.35;animation:drift 19s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(-50px,40px) scale(1.15)}}
+.hero .wrap{position:relative;z-index:1}
+.hero-copy{position:relative;z-index:2;max-width:680px;pointer-events:none}
+.hero-copy a,.hero-copy button{pointer-events:auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--muted);margin-bottom:22px}
+.eyebrow i{width:9px;height:9px;border-radius:50%;background:var(--sig);display:block;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.2;transform:scale(.7)}}
+h1{font-size:clamp(60px,10.6vw,126px);font-weight:800;line-height:.92}
+h1 .ln{display:block;overflow:hidden;padding-bottom:.08em}
+h1 .w{display:inline-block;animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+h1 .ln:nth-child(2) .w{animation-delay:.1s}
+h1 .ln:nth-child(3) .w{animation-delay:.2s}
+h1 .small{font-size:.6em;letter-spacing:-.01em}
+h1 .out{color:transparent;-webkit-text-stroke:2px var(--fg)}
+@keyframes rise{from{transform:translateY(105%) rotate(4deg)}to{transform:none}}
+#rot{display:inline-block;white-space:nowrap;color:var(--accent);transition:color .3s}
+#rot .c{display:inline-block;animation:chIn .6s cubic-bezier(.2,.9,.3,1.2) both}
+#rot .c.out{animation:chOut .35s cubic-bezier(.6,0,.9,.4) both}
+@keyframes chIn{from{transform:translateY(80%) rotate(14deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes chOut{to{transform:translateY(-90%) rotate(-12deg);opacity:0}}
+.lede{font-size:clamp(18px,2vw,21px);color:var(--muted);max-width:30em;margin-top:26px}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+ 
+.stage{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.fl{position:absolute;left:0;top:0;will-change:transform;transform-origin:50% 50%}
+@media(max-width:860px){ .stage{position:relative;height:400px;margin-top:20px} }
+ 
+/* hero floating objects */
+.pass{width:118px;height:162px;border-radius:8px 12px 12px 8px;background:var(--cover);color:#F4DC8A;box-shadow:0 18px 30px -12px rgba(18,10,51,.6), inset 5px 0 0 rgba(0,0,0,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:var(--f-mono);font-size:10px;letter-spacing:.22em}
+.pass .em{width:54px;height:54px;border-radius:50%;border:2px solid #F4DC8A;display:grid;place-items:center}
+.pass .em::before{content:"";width:26px;height:26px;border-radius:50%;border:2px solid #F4DC8A;border-left-color:transparent;transform:rotate(30deg)}
+.ticket{width:236px;height:98px;background:var(--card);color:var(--card-ink);border-radius:12px;display:grid;grid-template-columns:1fr 56px;overflow:hidden;
+  box-shadow:0 18px 30px -12px rgba(18,10,51,.55);font-family:var(--f-mono);border-top:5px solid var(--sun)}
+.ticket .l{padding:8px 14px;display:flex;flex-direction:column;justify-content:space-between}
+.ticket .l b{font-size:22px;letter-spacing:.02em;font-weight:500}
+.ticket .l span{font-size:9.5px;letter-spacing:.14em;color:#55508a}
+.ticket .r{background:repeating-linear-gradient(90deg,var(--card-ink) 0 2px,transparent 2px 4px,var(--card-ink) 4px 5px,transparent 5px 8px);opacity:.88;margin:10px}
+.tag{width:74px;height:136px;background:var(--sig);color:#fff;border-radius:10px 10px 14px 14px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:12px;
+  font-family:var(--f-mono);box-shadow:0 14px 24px -10px rgba(18,10,51,.55);position:relative}
+.tag::before{content:"";position:absolute;top:12px;left:50%;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:var(--bg)}
+.tag b{font-size:26px;font-weight:500;letter-spacing:.04em}
+.tag span{font-size:9px;letter-spacing:.2em}
+.stamp{width:128px;height:128px;border-radius:50%;border:4px double var(--sig);color:var(--sig);display:grid;place-items:center;text-align:center;
+  font-family:var(--f-mono);font-weight:500;font-size:12px;letter-spacing:.18em;line-height:1.4}
+.fl svg{display:block}
+ 
+/* sections */
+section{padding-block:clamp(56px,8vw,104px)}
+.sh{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 40px;margin-bottom:44px}
+.sh h2{font-size:clamp(38px,5.6vw,72px);font-weight:800;max-width:11em}
+.sh p{max-width:28em;color:var(--muted)}
+ 
+/* text + slide animation (visible by default, plays when scrolled into view) */
+.rw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+.rw>i{display:inline-block;font-style:normal}
+.go .rw>i{animation:rise .85s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 80ms)}
+.go.slide{animation:slideup .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+.go.slide-l{animation:slidel .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+.go.slide-r{animation:slider .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes slideup{from{opacity:0;transform:translateY(54px)}}
+@keyframes slidel{from{opacity:0;transform:translateX(-90px) rotate(-3deg)}}
+@keyframes slider{from{opacity:0;transform:translateX(90px) rotate(3deg)}}
+.go .chips li{animation:pop .6s cubic-bezier(.2,1.5,.4,1) both;animation-delay:calc(.3s + var(--i) * 70ms)}
+@keyframes pop{from{opacity:0;transform:scale(.4) translateY(14px)}}
+.lev{animation:bob 6s ease-in-out infinite}
+.go.lev.slide-l{animation:slidel .9s cubic-bezier(.2,.8,.2,1) both,bob 6s ease-in-out 1s infinite}
+.go.lev.slide-r{animation:slider .9s cubic-bezier(.2,.8,.2,1) both,bob 7.5s ease-in-out 1.4s infinite}
+@keyframes bob{50%{translate:0 -12px}}
+ 
+/* marquees */
+.marq{background:var(--accent);color:var(--accent-ink);overflow:hidden;padding-block:16px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.marq-t{display:flex;width:max-content;animation:slide 36s linear infinite}
+.marq span{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,5vw,58px);letter-spacing:.02em;padding-inline:20px;white-space:nowrap;line-height:1}
+.marq span:nth-child(even){color:transparent;-webkit-text-stroke:1.5px var(--accent-ink)}
+.marq2{background:var(--sun);color:#1B1147;overflow:hidden;padding-block:12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.marq2 .marq-t{animation:slide2 44s linear infinite}
+.marq2 span{font-family:var(--f-mono);font-weight:500;font-size:15px;letter-spacing:.16em;text-transform:uppercase;padding-inline:22px;white-space:nowrap}
+.marq2 span::after{content:"\2726";margin-left:44px;color:var(--sig)}
+@keyframes slide{to{transform:translateX(-50%)}}
+@keyframes slide2{from{transform:translateX(-50%)}to{transform:none}}
+ 
+/* routes */
+.chart{background:var(--bg2);border:1px solid var(--line);border-radius:22px;padding:14px}
+#map{display:block;width:100%;height:auto}
+.routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;margin-top:18px;border-top:1px solid var(--line)}
+.routes div{padding:14px 12px 12px 0;border-bottom:1px solid var(--line);min-width:0}
+.routes b{font-family:var(--f-mono);font-weight:500;font-size:15px;color:var(--accent)}
+.routes span{display:block;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.routes em{font-style:normal;display:block;font-weight:600;font-size:15px}
+.note{font-size:13.5px;color:var(--muted);margin-top:14px}
+ 
+/* services */
+.tracks{display:grid;grid-template-columns:1.15fr 1fr;gap:20px}
+@media(max-width:860px){.tracks{grid-template-columns:1fr}}
+.panel{border-radius:26px;padding:clamp(24px,3.4vw,44px);min-width:0}
+.panel.work{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink)}
+.panel.tour{background:var(--bg2);box-shadow:inset 0 0 0 2px var(--fg)}
+.panel h3{font-size:clamp(30px,4vw,48px);font-weight:800;margin-bottom:14px}
+.panel p{max-width:30em;opacity:.95}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px;padding:0;list-style:none}
+.chips li{padding:8px 15px;border-radius:999px;font-weight:500;font-size:15px;box-shadow:inset 0 0 0 1.5px currentColor}
+.panel.tour .chips li:nth-child(1){background:var(--sun);box-shadow:none;color:#1B1147}
+.panel.tour .chips li:nth-child(2){background:var(--teal);box-shadow:none;color:#10172e}
+.panel.tour .chips li:nth-child(3){background:var(--sig);box-shadow:none;color:#fff}
+.panel .mono{display:block;margin-top:30px;opacity:.9}
+ 
+/* process */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;position:relative;list-style:none;padding:0;margin:0;counter-reset:s}
+.steps::before{content:"";position:absolute;left:0;right:0;top:19px;border-top:2px dashed var(--line)}
+.steps::after{content:"";position:absolute;top:13px;left:0;width:14px;height:14px;border-radius:50%;background:var(--sig);box-shadow:0 0 0 6px color-mix(in srgb,var(--sig) 25%,transparent);animation:fly 7s ease-in-out infinite}
+@keyframes fly{0%{left:0}100%{left:calc(100% - 14px)}}
+.steps li{position:relative;padding-top:52px;min-width:0}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  display:grid;place-items:center;font-family:var(--f-mono);font-weight:500;z-index:1}
+.steps h3{font-size:22px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.steps p{font-size:15.5px;color:var(--muted)}
+@media(max-width:860px){
+  .steps{grid-template-columns:1fr;gap:0}
+  .steps::before{left:19px;right:auto;top:0;bottom:0;border-top:0;border-left:2px dashed var(--line)}
+  .steps::after{display:none}
+  .steps li{padding:0 0 30px 60px}
+}
+.trust{margin-top:56px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;padding:28px;border-radius:22px;background:var(--bg2);border:1px solid var(--line)}
+.trust p{color:var(--muted);max-width:44em}
+.trust p b{color:var(--fg)}
+.stamp.big{width:140px;height:140px;transform:rotate(-12deg)}
+.stamp.go{animation:thump .7s cubic-bezier(.2,1.4,.4,1)}
+@keyframes thump{0%{transform:scale(2.4) rotate(-30deg);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(-12deg)}}
+@media(max-width:640px){.trust{grid-template-columns:1fr}}
+ 
+/* form */
+.enq{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:start}
+@media(max-width:860px){.enq{grid-template-columns:1fr}}
+.enq h2{font-size:clamp(38px,5.6vw,72px);font-weight:800}
+.enq .side p{color:var(--muted);margin-top:20px;max-width:26em}
+.contact{margin-top:28px;display:grid;gap:6px;font-family:var(--f-mono);font-size:14px}
+.contact span{color:var(--muted)}
+form{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+form .full{grid-column:1/-1}
+label{display:grid;gap:6px;font-weight:600;font-size:14.5px;min-width:0}
+input,select,textarea{font:inherit;font-weight:400;color:var(--fg);background:var(--bg2);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+textarea{min-height:104px;resize:vertical}
+@media(max-width:560px){form{grid-template-columns:1fr}}
+.ready{margin-top:20px;padding:22px;border-radius:16px;border:1.5px solid var(--accent);background:var(--bg);display:grid;gap:14px}
+.ready[hidden]{display:none}
+.ready pre{margin:0;font-family:var(--f-mono);font-size:13.5px;white-space:pre-wrap;word-break:break-word;background:var(--bg2);padding:14px;border-radius:10px;user-select:all}
+.ready .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.ready small{color:var(--muted)}
+ 
+footer{border-top:1px solid var(--line);padding-block:32px 40px;color:var(--muted);font-size:14.5px;background:var(--bg)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 32px}
+ 
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+ 
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Lodestar Tours &amp; Travels">
+      <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 1 19.4 12.6 31 16 19.4 19.4 16 31 12.6 19.4 1 16 12.6 12.6Z"/></svg>
+      Lodestar
+    </a>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#routes">Routes</a></li>
+      <li><a href="#process">How it works</a></li>
+    </ul>
+    <a class="btn" href="#enquire">Enquire now</a>
+  </div>
+</header>
+ 
+<main id="top">
+<div class="hero">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="eyebrow mono"><i></i>Mumbai &middot; Overseas jobs &amp; holidays</p>
+      <h1 aria-label="Work abroad. See the world.">
+        <span class="ln"><span class="w">Work</span></span>
+        <span class="ln"><span class="w" id="rot" aria-hidden="true">abroad.</span></span>
+        <span class="ln small"><span class="w out">See the world.</span></span>
+      </h1>
+      <p class="lede">Lodestar places skilled people in overseas jobs and plans the trips in between. Visas, offer letters, flights and hotels sit with one team, so nothing gets lost between desks.</p>
+      <div class="cta">
+        <a class="btn" href="#enquire">Start your file &rarr;</a>
+        <a class="btn ghost" href="#routes">See our routes</a>
+      </div>
+    </div>
+    <div class="stage" id="stage" aria-hidden="true">
+      <div class="fl" data-x="70" data-y="20" data-mx="22" data-my="26" data-r="-12"><div class="pass"><div class="em"></div><span>PASSPORT</span><span>IND</span></div></div>
+      <div class="fl" data-x="80" data-y="58" data-mx="70" data-my="22" data-r="7"><div class="ticket"><div class="l"><span>BOARDING PASS &middot; GATE 24</span><b>BOM &rarr; DXB</b><span>SEAT 14A &middot; 03:15</span></div><div class="r"></div></div></div>
+      <div class="fl" data-x="58" data-y="76" data-mx="78" data-my="68" data-r="-6">
+        <svg width="132" height="140" viewBox="0 0 132 140" aria-hidden="true">
+          <path d="M44 34V18a8 8 0 0 1 8-8h28a8 8 0 0 1 8 8v16" fill="none" stroke="var(--fg)" stroke-width="7" stroke-linecap="round"/>
+          <rect x="10" y="30" width="112" height="90" rx="16" fill="var(--teal)"/>
+          <rect x="34" y="30" width="9" height="90" fill="#000" opacity=".16"/><rect x="89" y="30" width="9" height="90" fill="#000" opacity=".16"/>
+          <rect x="30" y="120" width="12" height="12" rx="5" fill="var(--fg)"/><rect x="90" y="120" width="12" height="12" rx="5" fill="var(--fg)"/>
+        </svg>
+      </div>
+      <div class="fl" data-x="92" data-y="14" data-mx="38" data-my="74" data-r="10">
+        <svg width="126" height="126" viewBox="0 0 126 126" aria-hidden="true">
+          <circle cx="63" cy="63" r="58" fill="var(--accent)"/>
+          <g fill="none" stroke="var(--accent-ink)" stroke-width="2" opacity=".75"><ellipse cx="63" cy="63" rx="24" ry="58"/><ellipse cx="63" cy="63" rx="46" ry="58"/><path d="M63 5v116M8 45h110M8 81h110M5 63h116"/></g>
+        </svg>
+      </div>
+      <div class="fl" data-x="66" data-y="46" data-mx="52" data-my="48" data-r="-18">
+        <svg width="92" height="80" viewBox="0 0 92 80" aria-hidden="true">
+          <path d="M90 2 2 36l30 10 10 32 14-22Z" fill="var(--sun)"/><path d="M90 2 32 46l-4 20 14-20Z" fill="#000" opacity=".18"/>
+        </svg>
+      </div>
+      <div class="fl" data-x="88" data-y="86" data-mx="88" data-my="40" data-r="14"><div class="tag"><b>DXB</b><span>DUBAI</span></div></div>
+      <div class="fl" data-x="76" data-y="90" data-mx="12" data-my="80" data-r="-10"><div class="stamp">VISA<br>GRANTED<br>&#9733;</div></div>
+    </div>
+  </div>
+</div>
+ 
+<div class="marq" aria-hidden="true"><div class="marq-t" id="marq"></div></div>
+<div class="marq2" aria-hidden="true"><div class="marq-t" id="marq2"></div></div>
+ 
+<section id="services">
+  <div class="wrap">
+    <div class="sh" data-anim="words">
+      <h2>Two desks. One team behind both.</h2>
+      <p class="slide" data-anim>Most people come for a job abroad and stay for the travel help, or the other way round. Either way the paperwork is one file.</p>
+    </div>
+    <div class="tracks">
+      <div class="panel work lev slide-l" data-anim>
+        <h3>International work placement</h3>
+        <p>We match your trade and experience to employers who have confirmed vacancies, then take the file through offer, visa, clearances and departure.</p>
+        <ul class="chips">
+          <li style="--i:0">Hospitality</li><li style="--i:1">Nursing &amp; care</li><li style="--i:2">Construction trades</li><li style="--i:3">Logistics &amp; drivers</li><li style="--i:4">Technicians</li><li style="--i:5">Retail &amp; sales</li>
+        </ul>
+        <span class="mono">Gulf &middot; Europe &middot; North America &middot; South-East Asia</span>
+      </div>
+      <div class="panel tour lev slide-r" data-anim>
+        <h3>Tours &amp; travel</h3>
+        <p>Holiday packages, family trips and corporate groups, with tickets, stays and visas arranged together.</p>
+        <ul class="chips">
+          <li style="--i:0">Holiday packages</li><li style="--i:1">Visa support</li><li style="--i:2">Flights &amp; hotels</li><li style="--i:3">Group travel</li>
+        </ul>
+        <span class="mono">Booked from Mumbai</span>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<section id="routes" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh" data-anim="words">
+      <h2>Our flight chart from Mumbai</h2>
+      <p class="slide" data-anim>Every arc is a route we send people on, drawn to scale on real latitude and longitude. Distances are great-circle kilometres from Mumbai.</p>
+    </div>
+    <div class="chart slide" data-anim id="chartBox">
+      <canvas id="map" role="img" aria-label="Flight chart with arcs from Mumbai to Dubai, Doha, Riyadh, Singapore, Frankfurt, London, Toronto and Sydney"></canvas>
+      <div class="routes" id="routeList"></div>
+    </div>
+    <p class="note">Route list shows the destinations we currently serve. Edit the list in the page script to match your own.</p>
+  </div>
+</section>
+ 
+<section id="process" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh" data-anim="words">
+      <h2>From first call to landing</h2>
+      <p class="slide" data-anim>Five stages, always in this order. You see the status of each one before we move to the next.</p>
+    </div>
+    <ol class="steps" id="steps">
+      <li class="slide" data-anim><h3>Profile</h3><p>We record your skills, experience, passport and the country you want to work in.</p></li>
+      <li class="slide" data-anim><h3>Employer match</h3><p>Your CV goes only to employers with a confirmed vacancy. You interview with them directly.</p></li>
+      <li class="slide" data-anim><h3>Offer &amp; contract</h3><p>You get the offer letter and contract in writing, in a language you read, before you pay any fee.</p></li>
+      <li class="slide" data-anim><h3>Visa &amp; clearances</h3><p>Visa file, medical, police clearance and emigration paperwork, tracked line by line.</p></li>
+      <li class="slide" data-anim><h3>Flight &amp; arrival</h3><p>Ticket, pre-departure briefing and a contact at the other end for your first week.</p></li>
+    </ol>
+    <div class="trust">
+      <div class="stamp big" id="stampBig">CLEARED<br>FOR<br>DEPARTURE</div>
+      <p><b>Registered agent. Verified offers.</b> Add your recruitment registration number here. We charge candidates only the service fee the government allows, give a receipt for every payment, and check each employer and job offer before we send a single CV.</p>
+    </div>
+  </div>
+</section>
+ 
+<section id="enquire" style="padding-top:0">
+  <div class="wrap enq">
+    <div class="side">
+      <h2 data-anim="words">Tell us where you want to go.</h2>
+      <p>Fill this in and you get a ready-to-send enquiry. Send it to the number below and a counsellor replies the same working day.</p>
+      <div class="contact">
+        <span>WhatsApp / call</span><b>+91 00000 00000</b>
+        <span>Email</span><b>hello@your-domain.com</b>
+        <span>Office</span><b>Your address, Mumbai</b>
+      </div>
+    </div>
+    <div class="slide" data-anim>
+      <form id="enqForm" novalidate>
+        <label>Full name<input id="f-name" required autocomplete="name"></label>
+        <label>Phone<input id="f-phone" type="tel" required autocomplete="tel"></label>
+        <label class="full">I am looking for
+          <select id="f-kind">
+            <option>A job abroad</option>
+            <option>A holiday or tour</option>
+            <option>Both</option>
+          </select>
+        </label>
+        <label>Destination<input id="f-dest" placeholder="e.g. Dubai"></label>
+        <label>Trade or profession<input id="f-trade" placeholder="e.g. Electrician"></label>
+        <label class="full">Anything else<textarea id="f-msg" placeholder="Passport status, travel dates, number of people"></textarea></label>
+        <div class="full"><button class="btn" type="submit">Prepare my enquiry &rarr;</button></div>
+      </form>
+      <div class="ready" id="ready" hidden>
+        <b>Your enquiry is ready. Nothing has been sent yet.</b>
+        <pre id="readyText"></pre>
+        <div class="row">
+          <button class="btn" type="button" id="copyBtn">Copy text</button>
+          <small id="copyMsg">Paste it into WhatsApp or email.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+ 
+<footer>
+  <div class="wrap">
+    <span>&copy; Lodestar Tours &amp; Travels &middot; Mumbai</span>
+    <span>Reg. No. [add your registration number]</span>
+  </div>
+</footer>
+ 
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var px=-9999, py=-9999;   /* pointer in client coordinates */
+ 
+  /* marquees */
+  var codes = ['BOM','DXB','DOH','RUH','SIN','FRA','LHR','YYZ','SYD','MCT','KWI','WAW'], h='', k;
+  for(k=0;k<2;k++) codes.forEach(function(c){ h += '<span>'+c+'</span>'; });
+  document.getElementById('marq').innerHTML = h;
+  var words = ['Visa','Offer letter','Flights','Hotels','Holidays','Job placement','Medical','Emigration','Pre-departure briefing','Airport pickup'];
+  h=''; for(k=0;k<2;k++) words.forEach(function(w){ h += '<span>'+w+'</span>'; });
+  document.getElementById('marq2').innerHTML = h;
+ 
+  /* rotating hero word, letter by letter */
+  var rot = document.getElementById('rot');
+  var rotWords = [['abroad.','--accent'],['in Dubai.','--sig'],['in Canada.','--teal'],['in Qatar.','--accent2'],['in Europe.','--sig']];
+  var ri = 0;
+  function setWord(txt,colVar){
+    rot.style.color = 'var('+colVar+')';
+    rot.innerHTML = txt.split('').map(function(ch,i){
+      return '<span class="c" style="animation-delay:'+(i*45)+'ms">'+(ch===' '?'&nbsp;':ch)+'</span>';
+    }).join('');
+  }
+  setWord(rotWords[0][0],rotWords[0][1]);
+  if(!reduce){
+    setInterval(function(){
+      Array.prototype.forEach.call(rot.children,function(c,i){ c.style.animationDelay=(i*25)+'ms'; c.classList.add('out'); });
+      setTimeout(function(){ ri=(ri+1)%rotWords.length; setWord(rotWords[ri][0],rotWords[ri][1]); }, 520);
+    }, 2800);
+  }
+ 
+  /* shared physics step for one floating thing */
+  function step(it,cx,cy,R,force){
+    var dx=cx-px, dy=cy-py, d=Math.sqrt(dx*dx+dy*dy)||1;
+    if(!reduce && d<R){ var f=Math.pow(1-d/R,2)*force; it.vx+=dx/d*f; it.vy+=dy/d*f; }
+    it.vx += -it.x*.035; it.vy += -it.y*.035; it.vx*=.9; it.vy*=.9; it.x+=it.vx; it.y+=it.vy;
+  }
+  window.addEventListener('pointermove',function(e){ px=e.clientX; py=e.clientY; },{passive:true});
+  window.addEventListener('pointerleave',function(){ px=py=-9999; });
+ 
+  /* hero stage */
+  var stage = document.getElementById('stage');
+  var items = Array.prototype.slice.call(stage.querySelectorAll('.fl')).map(function(el,i){
+    return {el:el,hx:+el.dataset.x,hy:+el.dataset.y,mx:+el.dataset.mx,my:+el.dataset.my,rot:+el.dataset.r,ph:i*1.9,x:0,y:0,vx:0,vy:0,w:0,h:0};
+  });
+  var SW=0,SH=0,mobile=false;
+  function measureStage(){
+    var r=stage.getBoundingClientRect(); SW=r.width; SH=r.height; mobile=SW<700;
+    items.forEach(function(it){ it.w=it.el.offsetWidth; it.h=it.el.offsetHeight; });
+  }
+  function paintStage(t){
+    var r=stage.getBoundingClientRect(), s=mobile?.72:1, R=mobile?110:190;
+    items.forEach(function(it){
+      var hx=(mobile?it.mx:it.hx)/100*SW, hy=(mobile?it.my:it.hy)/100*SH;
+      var fx=reduce?0:Math.sin(t*.00055+it.ph)*16, fy=reduce?0:Math.cos(t*.00047+it.ph*1.3)*20;
+      step(it, r.left+hx+fx+it.x, r.top+hy+fy+it.y, R, 3.2);
+      var rot=it.rot+(reduce?0:Math.sin(t*.0007+it.ph)*5)+it.vx*2.2;
+      it.el.style.transform='translate3d('+(hx+fx+it.x-it.w/2)+'px,'+(hy+fy+it.y-it.h/2)+'px,0) rotate('+rot+'deg) scale('+s+')';
+    });
+  }
+ 
+  /* page-long antigravity sky: objects rise faster than the page scrolls and wrap round */
+  var sky = document.getElementById('sky'), skyItems = [], DH=0, DW=0, VH=0;
+  var shapes = {
+    plane:'<svg viewBox="0 0 92 80"><path d="M90 2 2 36l30 10 10 32 14-22Z" fill="currentColor"/></svg>',
+    star:'<svg viewBox="0 0 32 32"><path d="M16 1 19.4 12.6 31 16 19.4 19.4 16 31 12.6 19.4 1 16 12.6 12.6Z" fill="currentColor"/></svg>',
+    cloud:'<svg viewBox="0 0 120 70"><path d="M30 60a22 22 0 0 1-2-44 28 28 0 0 1 54-6 24 24 0 0 1 12 48Z" fill="currentColor"/></svg>',
+    pin:'<svg viewBox="0 0 60 80"><path d="M30 78C10 52 4 40 4 28a26 26 0 0 1 52 0c0 12-6 24-26 50Z" fill="currentColor"/><circle cx="30" cy="28" r="10" fill="var(--bg)"/></svg>',
+    sun:'<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="20" fill="currentColor"/><g stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M40 4v10M40 66v10M4 40h10M66 40h10M14 14l7 7M59 59l7 7M66 14l-7 7M21 59l-7 7"/></g></svg>',
+    case:'<svg viewBox="0 0 90 90"><path d="M30 24V14a6 6 0 0 1 6-6h18a6 6 0 0 1 6 6v10" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><rect x="6" y="22" width="78" height="60" rx="12" fill="currentColor"/><rect x="26" y="22" width="6" height="60" fill="#000" opacity=".18"/><rect x="58" y="22" width="6" height="60" fill="#000" opacity=".18"/></svg>',
+    ring:'<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="currentColor" stroke-width="6"/><path d="M40 16 48 40 40 64 32 40Z" fill="currentColor"/></svg>',
+    ticket:'<svg viewBox="0 0 110 60"><path d="M8 4h94a6 6 0 0 1 6 6v10a8 8 0 0 0 0 16v14a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V36a8 8 0 0 0 0-16V10a6 6 0 0 1 6-6Z" fill="currentColor"/><path d="M78 8v44" stroke="var(--bg)" stroke-width="3" stroke-dasharray="4 4"/></svg>'
+  };
+  var kinds = ['plane','cloud','star','pin','sun','case','ring','ticket','plane','cloud','star','sun','pin','case','ticket','ring','plane','star'];
+  var cols = ['--accent','--sig','--sun','--teal','--accent2','--sig','--accent','--teal','--sun','--accent2','--sig','--accent','--teal','--sun','--accent','--sig','--accent2','--teal'];
+  function rng(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function buildSky(){
+    sky.style.height='0px';
+    DH = Math.max(document.documentElement.scrollHeight, window.innerHeight); DW = window.innerWidth; VH = window.innerHeight;
+    sky.style.height = DH+'px';
+    var rnd = rng(7), narrow = DW<700;
+    sky.innerHTML=''; skyItems=[];
+    kinds.forEach(function(kind,i){
+      var edge = i%3!==2;
+      var xp = edge ? (i%2 ? .86+rnd()*.11 : .01+rnd()*.1) : .3+rnd()*.4;
+      var size = (30+rnd()*54)*(narrow?.7:1);
+      var el = document.createElement('div'); el.className='sk';
+      el.style.width=size+'px'; el.style.height=size*(kind==='cloud'?.58:kind==='ticket'?.55:1)+'px';
+      el.style.color='var('+cols[i]+')'; el.style.opacity = edge ? (narrow?.45:.7) : .28;
+      el.innerHTML = shapes[kind]; sky.appendChild(el);
+      skyItems.push({el:el,xp:xp,base:rnd()*(DH+300),speed:-(.12+rnd()*.3),rot:rnd()*50-25,ph:rnd()*6.28,x:0,y:0,vx:0,vy:0,w:size,h:el.offsetHeight||size});
+    });
+  }
+  function paintSky(t){
+    var sy = window.pageYOffset, span = DH+300;
+    skyItems.forEach(function(it){
+      var wy = (((it.base + sy*it.speed) % span)+span)%span - 150;
+      var screenY = wy - sy;
+      if(screenY < -160 || screenY > VH+160){ it.el.style.visibility='hidden'; return; }
+      it.el.style.visibility='visible';
+      var fx=reduce?0:Math.sin(t*.0005+it.ph)*18, fy=reduce?0:Math.cos(t*.0006+it.ph)*14;
+      var cx=it.xp*DW+fx+it.x, cy=screenY+fy+it.y;
+      step(it,cx,cy,150,2.6);
+      var rot=it.rot+(reduce?0:Math.sin(t*.0006+it.ph)*8)+it.vx*2;
+      it.el.style.transform='translate3d('+(it.xp*DW+fx+it.x-it.w/2)+'px,'+(wy+fy+it.y)+'px,0) rotate('+rot+'deg)';
+    });
+  }
+ 
+  function relayout(){ measureStage(); buildSky(); paintStage(0); paintSky(0); }
+  relayout();
+  window.addEventListener('resize',relayout);
+  window.addEventListener('load',relayout);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+  if(window.ResizeObserver){ var lastH=0; new ResizeObserver(function(){ var hh=document.body.scrollHeight; if(Math.abs(hh-lastH)>40 && Math.abs(hh-DH)>40){ lastH=hh; buildSky(); } }).observe(document.body); }
+  if(reduce){ window.addEventListener('scroll',function(){ paintSky(0); },{passive:true}); }
+  else (function loop(t){ paintStage(t); paintSky(t); requestAnimationFrame(loop); })(0);
+ 
+  /* flight chart */
+  var O = {n:'Mumbai',c:'BOM',lon:72.88,lat:19.09};
+  var D = [
+    {n:'Dubai',c:'DXB',lon:55.36,lat:25.25,ax:10,ay:-8,al:'left'},
+    {n:'Doha',c:'DOH',lon:51.56,lat:25.27,ax:-8,ay:-12,al:'right'},
+    {n:'Riyadh',c:'RUH',lon:46.70,lat:24.96,ax:-9,ay:-3,al:'right'},
+    {n:'Singapore',c:'SIN',lon:103.99,lat:1.36,ax:9,ay:4,al:'left'},
+    {n:'Frankfurt',c:'FRA',lon:8.57,lat:50.03,ax:8,ay:-8,al:'left'},
+    {n:'London',c:'LHR',lon:-0.46,lat:51.47,ax:-9,ay:-8,al:'right'},
+    {n:'Toronto',c:'YYZ',lon:-79.63,lat:43.68,ax:9,ay:-8,al:'left'},
+    {n:'Sydney',c:'SYD',lon:151.18,lat:-33.95,ax:-10,ay:4,al:'right'}
+  ];
+  function km(a,b){
+    var r=Math.PI/180, dLat=(b.lat-a.lat)*r, dLon=(b.lon-a.lon)*r;
+    var q=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLon/2)*Math.sin(dLon/2);
+    return Math.round(6371*2*Math.atan2(Math.sqrt(q),Math.sqrt(1-q)));
+  }
+  var list = document.getElementById('routeList');
+  list.innerHTML = D.map(function(d){
+    return '<div><b>BOM &rarr; '+d.c+'</b><em>'+d.n+'</em><span><u data-km="'+km(O,d)+'" style="text-decoration:none">'+km(O,d).toLocaleString('en-IN')+'</u> km</span></div>';
+  }).join('');
+ 
+  var cv = document.getElementById('map'), ctx = cv.getContext('2d');
+  var B = {l:-100,r:165,t:64,b:-44}, cw=0, ch=0, col={};
+  function readColors(){
+    var s=getComputedStyle(document.documentElement);
+    ['--fg','--muted','--line','--accent','--sig','--bg2','--sun','--teal'].forEach(function(n){ col[n]=s.getPropertyValue(n).trim(); });
+  }
+  function size(){
+    var r=cv.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+    cw=r.width; ch=Math.max(cw/2.5,280);
+    cv.style.height=ch+'px'; cv.width=cw*dpr; cv.height=ch*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function P(lon,lat){ return [(lon-B.l)/(B.r-B.l)*(cw-56)+40,(B.t-lat)/(B.t-B.b)*(ch-40)+10]; }
+  function Q(a,c,b,t){ var u=1-t; return [u*u*a[0]+2*u*t*c[0]+t*t*b[0],u*u*a[1]+2*u*t*c[1]+t*t*b[1]]; }
+  function ctrl(a,b){ var dx=b[0]-a[0],dy=b[1]-a[1],len=Math.sqrt(dx*dx+dy*dy); return [(a[0]+b[0])/2,(a[1]+b[1])/2-Math.min(len*.34,150)]; }
+  function lonLabel(v){ return Math.abs(v)+'°'+(v<0?'W':v>0?'E':''); }
+  function latLabel(v){ return Math.abs(v)+'°'+(v<0?'S':v>0?'N':''); }
+  var arcCols = ['--accent','--sig','--teal','--sun','--accent','--sig','--teal','--sun'];
+ 
+  function draw(t){
+    ctx.clearRect(0,0,cw,ch);
+    var narrow=cw<640, v, p, q;
+    ctx.font='10.5px "JetBrains Mono",monospace'; ctx.textBaseline='middle';
+    for(v=-100;v<=160;v+=40){ p=P(v,B.t); q=P(v,B.b);
+      ctx.strokeStyle=col['--line']; ctx.lineWidth=1; ctx.setLineDash([2,5]); ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]); ctx.stroke();
+      ctx.setLineDash([]); ctx.fillStyle=col['--muted']; ctx.textAlign='center'; ctx.fillText(lonLabel(v),p[0],ch-8); }
+    for(v=-30;v<=60;v+=30){ p=P(B.l,v); q=P(B.r,v);
+      ctx.strokeStyle=col['--line']; ctx.lineWidth=v===0?1.5:1; ctx.setLineDash(v===0?[]:[2,5]); ctx.beginPath(); ctx.moveTo(p[0],p[1]); ctx.lineTo(q[0],q[1]); ctx.stroke();
+      ctx.setLineDash([]); ctx.fillStyle=col['--muted']; ctx.textAlign='left'; ctx.fillText(latLabel(v),4,p[1]-9); }
+    ctx.setLineDash([]);
+    var o=P(O.lon,O.lat);
+    var routes=D.map(function(d,i){ var b=P(d.lon,d.lat); return {d:d,b:b,c:ctrl(o,b),i:i,col:col[arcCols[i]]}; });
+    routes.forEach(function(r){
+      ctx.strokeStyle=r.col; ctx.globalAlpha=.3; ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(o[0],o[1]); ctx.quadraticCurveTo(r.c[0],r.c[1],r.b[0],r.b[1]); ctx.stroke(); ctx.globalAlpha=1;
+    });
+    routes.forEach(function(r){
+      var prog=((t*.00011+r.i*.131)%1), tail=.3, seg=22, kk;
+      for(kk=0;kk<seg;kk++){
+        var t0=prog-tail*(1-kk/seg), t1=prog-tail*(1-(kk+1)/seg);
+        if(t1<0) continue; t0=Math.max(0,t0);
+        var a=Q(o,r.c,r.b,t0), b2=Q(o,r.c,r.b,t1);
+        ctx.strokeStyle=r.col; ctx.globalAlpha=(kk+1)/seg; ctx.lineWidth=2.8;
+        ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b2[0],b2[1]); ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+      var pos=Q(o,r.c,r.b,prog), ahead=Q(o,r.c,r.b,Math.min(prog+.01,1)), ang=Math.atan2(ahead[1]-pos[1],ahead[0]-pos[0]);
+      ctx.save(); ctx.translate(pos[0],pos[1]); ctx.rotate(ang); ctx.fillStyle=col['--fg'];
+      ctx.beginPath(); ctx.moveTo(8,0); ctx.lineTo(-6,-5.5); ctx.lineTo(-3,0); ctx.lineTo(-6,5.5); ctx.closePath(); ctx.fill(); ctx.restore();
+    });
+    routes.forEach(function(r){
+      var ph=((t*.0007+r.i*.29)%1);
+      ctx.strokeStyle=r.col; ctx.globalAlpha=1-ph; ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.arc(r.b[0],r.b[1],4+ph*13,0,6.2832); ctx.stroke(); ctx.globalAlpha=1;
+      ctx.fillStyle=r.col; ctx.beginPath(); ctx.arc(r.b[0],r.b[1],4.5,0,6.2832); ctx.fill();
+      if(narrow && (r.d.c==='DOH'||r.d.c==='RUH')) return;
+      ctx.textAlign=r.d.al; ctx.fillStyle=col['--fg']; ctx.font='500 11.5px "JetBrains Mono",monospace';
+      ctx.fillText(narrow?r.d.c:r.d.c+' '+r.d.n, r.b[0]+r.d.ax, r.b[1]+r.d.ay);
+    });
+    ctx.fillStyle=col['--fg']; ctx.beginPath(); ctx.arc(o[0],o[1],6.5,0,6.2832); ctx.fill();
+    ctx.fillStyle=col['--bg2']; ctx.beginPath(); ctx.arc(o[0],o[1],2.5,0,6.2832); ctx.fill();
+    ctx.fillStyle=col['--fg']; ctx.textAlign='left'; ctx.font='600 12.5px "JetBrains Mono",monospace';
+    ctx.fillText('BOM Mumbai',o[0]+12,o[1]+16);
+  }
+  size(); readColors(); draw(0);
+  window.addEventListener('resize',function(){ size(); readColors(); draw(0); });
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  if(mq.addEventListener) mq.addEventListener('change',function(){ readColors(); draw(0); });
+  new MutationObserver(function(){ readColors(); draw(0); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ readColors(); draw(0); });
+  if(!reduce){
+    var f=0, vis=true;
+    if('IntersectionObserver' in window) new IntersectionObserver(function(e){ vis=e[0].isIntersecting; }).observe(cv);
+    (function loop(t){ if(vis){ if(++f%40===0) readColors(); draw(t); } requestAnimationFrame(loop); })(0);
+  }
+ 
+  /* split headings into words for the reveal */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-anim="words"]'),function(host){
+    var h2 = host.matches('h2') ? host : host.querySelector('h2'); if(!h2) return;
+    var parts = h2.textContent.trim().split(/\s+/);
+    h2.setAttribute('aria-label',h2.textContent.trim());
+    h2.innerHTML = parts.map(function(w,i){ return '<span class="rw" aria-hidden="true"><i style="--i:'+i+'">'+w+'</i></span>'; }).join(' ');
+  });
+  /* stagger the five steps */
+  Array.prototype.forEach.call(document.querySelectorAll('#steps li'),function(li,i){ li.style.setProperty('--d',(i*.12)+'s'); });
+ 
+  /* play animations as things scroll into view */
+  var kmCounted=false;
+  function countUp(){
+    if(kmCounted||reduce) return; kmCounted=true;
+    var us=document.querySelectorAll('#routeList u'), t0=performance.now();
+    (function tick(now){
+      var k=Math.min((now-t0)/1400,1), e=1-Math.pow(1-k,3);
+      Array.prototype.forEach.call(us,function(u){ u.textContent=Math.round(+u.dataset.km*e).toLocaleString('en-IN'); });
+      if(k<1) requestAnimationFrame(tick);
+    })(t0);
+  }
+  var targets = document.querySelectorAll('[data-anim], #stampBig');
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting) return;
+        e.target.classList.add('go'); io.unobserve(e.target);
+        if(e.target.id==='chartBox') countUp();
+      });
+    },{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+    Array.prototype.forEach.call(targets,function(t){ io.observe(t); });
+  }
+ 
+  /* enquiry: build the text, never claim it was sent */
+  var form=document.getElementById('enqForm'), box=document.getElementById('ready'), pre=document.getElementById('readyText');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var g=function(id){ return document.getElementById(id).value.trim(); };
+    if(!g('f-name')||!g('f-phone')){ document.getElementById(!g('f-name')?'f-name':'f-phone').focus(); return; }
+    var lines=['Enquiry for Lodestar Tours & Travels','Name: '+g('f-name'),'Phone: '+g('f-phone'),'Looking for: '+document.getElementById('f-kind').value];
+    if(g('f-dest')) lines.push('Destination: '+g('f-dest'));
+    if(g('f-trade')) lines.push('Trade: '+g('f-trade'));
+    if(g('f-msg')) lines.push('Notes: '+g('f-msg'));
+    pre.textContent=lines.join('\n'); box.hidden=false;
+    document.getElementById('copyMsg').textContent='Paste it into WhatsApp or email.';
+  });
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var msg=document.getElementById('copyMsg');
+    function fallback(){
+      var r=document.createRange(); r.selectNodeContents(pre); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      msg.textContent='Text selected. Press Ctrl/Cmd+C to copy.';
+    }
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(pre.textContent).then(function(){ msg.textContent='Copied.'; }).catch(fallback); } else { fallback(); } }
+    catch(err){ fallback(); }
+  });
+})();
+</script>
+</body>
+</html>
